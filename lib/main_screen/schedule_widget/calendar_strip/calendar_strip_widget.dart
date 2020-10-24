@@ -1,12 +1,21 @@
 import 'package:calendar_strip/calendar_strip.dart';
 import 'package:flutter/material.dart';
+import 'package:mirea_app/main_screen/schedule_widget/schedule_widget.dart';
 
 class CalendarStripWidget extends StatefulWidget {
+  final ChangeDayCallback _changeDay;
+
+  const CalendarStripWidget(this._changeDay);
+
   @override
-  State<StatefulWidget> createState() => CalendarStripWidgetState();
+  State<StatefulWidget> createState() => CalendarStripWidgetState(_changeDay);
 }
 
 class CalendarStripWidgetState extends State<CalendarStripWidget> {
+  final ChangeDayCallback _changeDay;
+
+  CalendarStripWidgetState(this._changeDay);
+
   @override
   Widget build(BuildContext context) => CalendarStrip(
         startDate: DateTime(2020, 1, 1),
@@ -14,7 +23,7 @@ class CalendarStripWidgetState extends State<CalendarStripWidget> {
         dateTileBuilder: dateTileBuilder,
         monthNameWidget: monthNameWidget,
         iconColor: Colors.black87,
-        onDateSelected: () => print("object"),
+        onDateSelected: _changeDay,
         containerDecoration: BoxDecoration(color: Theme.of(context).primaryColor),
         addSwipeGesture: true,
       );

@@ -19,11 +19,12 @@ class LessonListState extends State<LessonsList> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: Theme.of(context).primaryColor,
-      child: Column(
-        children: _lessons.map((lesson) => lessonItemWidget(lesson)).toList(),
-      ),
+    return Expanded(
+      child: ListView.builder(
+          itemCount: _lessons.length,
+          itemBuilder: (context, index) {
+            return lessonItemWidget(_lessons[index]);
+          }),
     );
   }
 

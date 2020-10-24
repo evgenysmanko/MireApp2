@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mirea_app/model/Lesson.dart';
 
 import 'calendar_strip/calendar_strip_widget.dart';
@@ -10,13 +11,11 @@ class ScheduleWidget extends StatefulWidget {
   State<StatefulWidget> createState() => ScheduleWidgetState();
 }
 
+typedef void ChangeDayCallback(DateTime dateTime);
+
 class ScheduleWidgetState extends State<ScheduleWidget> {
-  final lessons = [
-    Lesson(name: "Математическая логика и предметная статиистика", teacher: "Петров", room: "256", num: 1, type: "пр"),
-    Lesson(name: "Основы инфромационной безопасности на предприятиях", teacher: "Петров", room: "256", num: 2, type: "лек"),
-    Lesson(name: "Физическая культура и спорт", teacher: "Петров", room: "256", num: 3, type: "пр"),
-    Lesson(name: "Квантовая физика в основах изучений Ньютона", teacher: "Петров", room: "256", num: 4, type: "пр")
-  ];
+  final List<Lesson> lessons = [];
+  List<Lesson> lessonsOfDay = [];
 
   @override
   Widget build(BuildContext context) {
@@ -45,17 +44,28 @@ class ScheduleWidgetState extends State<ScheduleWidget> {
             ));
           });
           return Column(
-            children: [CalendarStripWidget(), LessonsList(lessons)],
+            mainAxisSize: MainAxisSize.max,
+            children: [
+              CalendarStripWidget((DateTime date) {
+                print('wn: ' + weekNumber(date).toString());
+                setState(() {
+                  lessonsOfDay = lessons.where((element) => date.weekday - 1 == element.dayOfWeek).where((element) => element.weeks.contains(weekNumber(date))).toList();
+                  lessonsOfDay.sort((a, b) => a.num.compareTo(b.num));
+                });
+              }),
+              LessonsList(lessons)
+            ],
           );
         }
 
         return getLoadingIndicator();
       },
     );
+  }
 
-    return Column(
-      children: [Container(padding: EdgeInsets.only(top: 30), child: CalendarStripWidget()), LessonsList(lessons)],
-    );
+  int weekNumber(DateTime date) {
+    int dayOfYear = int.parse(DateFormat("D").format(date));
+    return ((dayOfYear - date.weekday + 10) / 7).floor() - 35;
   }
 
   Widget getLoadingIndicator() {
