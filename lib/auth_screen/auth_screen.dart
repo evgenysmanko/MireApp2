@@ -66,6 +66,7 @@ class AuthScreenState extends State<AuthScreen> {
                 ],
               )),
           FloatingActionButton(
+            onPressed: () {},
             child: Icon(Icons.arrow_forward),
           )
         ],
